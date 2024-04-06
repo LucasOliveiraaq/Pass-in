@@ -27,7 +27,8 @@ public class Event {
     @Column(nullable = false, unique = true)
     private String slug;
 
-    @Column(nullable = false, unique = false, name = "maximum_attendees")
+//    @Column(nullable = false, unique = false, name = "maximum_attendees")
+    @Column(nullable = false, unique = false)
     private Integer maximunAttendees;
 
 }

@@ -3,9 +3,10 @@ package lucaspo.com.passin.services;
 import lombok.RequiredArgsConstructor;
 import lucaspo.com.passin.domain.attendee.Attendee;
 import lucaspo.com.passin.domain.event.Event;
+import lucaspo.com.passin.domain.event.exceptions.EventNotFoundException;
+import lucaspo.com.passin.dto.event.EventIdDTO;
 import lucaspo.com.passin.dto.event.EventRequestDTO;
 import lucaspo.com.passin.dto.event.EventResponseDTO;
-import lucaspo.com.passin.repositories.AttendeeRepository;
 import lucaspo.com.passin.repositories.EventRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,21 +18,22 @@ import java.util.List;
 public class EventService {
 
     private final EventRepository eventRepository;
-    private final AttendeeRepository attendeeRepository;
+    private final AttendeeService attendeeService;
 
     public EventResponseDTO getEventDetail(String eventId) {
-        Event event = this.eventRepository.findById(eventId).orElseThrow(() -> new RuntimeException("Event not found with ID: " + eventId));
-        List<Attendee> attendeeList = this.attendeeRepository.findByEventId(eventId);
+        Event event = this.eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException("Event not found with ID: " + eventId));
+        List<Attendee> attendeeList = this.attendeeService.getAllAttendeesFromEvent(eventId);
         return new EventResponseDTO(event, attendeeList.size());
     }
 
-    public void createEvent(EventRequestDTO eventDTO) {
+    public EventIdDTO createEvent(EventRequestDTO eventDTO) {
         Event newEvent = new Event();
         newEvent.setTitle(eventDTO.title());
         newEvent.setDetails(eventDTO.details());
         newEvent.setMaximunAttendees(eventDTO.maximunAttendees());
         newEvent.setSlug(this.createSlug(eventDTO.title()));
         this.eventRepository.save(newEvent);
+        return new EventIdDTO(newEvent.getId());
     }
 
     private String createSlug(String text) {

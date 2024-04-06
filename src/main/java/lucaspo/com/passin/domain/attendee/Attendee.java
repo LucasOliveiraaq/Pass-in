@@ -22,7 +22,7 @@ public class Attendee {
     private String id;
 
     @Column(nullable = false)
-    private String name;
+    private String nome;
     @Column(nullable = false)
     private String email;
 
