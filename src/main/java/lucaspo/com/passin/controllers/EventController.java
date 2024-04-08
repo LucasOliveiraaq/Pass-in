@@ -37,4 +37,12 @@ public class EventController {
         AttendeesListResponseDTO attendeesListResponseDTO =  this.attendeeService.getEventsAttendee(id);
         return ResponseEntity.ok(attendeesListResponseDTO);
     }
+
+    @PostMapping
+    public ResponseEntity<EventIdDTO> registerParticipant(@RequestBody EventRequestDTO body, UriComponentsBuilder uriComponentsBuilder) {
+        EventIdDTO eventIdDTO = this.eventService.createEvent(body);
+        var uri = uriComponentsBuilder.path("/events/{id}").buildAndExpand(eventIdDTO.eventId()).toUri();
+        return ResponseEntity.created(uri).body(eventIdDTO);
+    }
+
 }

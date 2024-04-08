@@ -3,12 +3,16 @@ package lucaspo.com.passin.services;
 import lombok.RequiredArgsConstructor;
 import lucaspo.com.passin.domain.attendee.Attendee;
 import lucaspo.com.passin.domain.attendee.exceptions.AttendeeAlreadyExistException;
+import lucaspo.com.passin.domain.attendee.exceptions.AttendeeNotFoundException;
 import lucaspo.com.passin.domain.checkin.CheckIn;
+import lucaspo.com.passin.dto.attendee.AttendeeBagdeResponseDTO;
 import lucaspo.com.passin.dto.attendee.AttendeeDetails;
 import lucaspo.com.passin.dto.attendee.AttendeesListResponseDTO;
+import lucaspo.com.passin.dto.attendee.AttendeeBadgeDTO;
 import lucaspo.com.passin.repositories.AttendeeRepository;
 import lucaspo.com.passin.repositories.CheckInRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,5 +47,11 @@ public class AttendeeService {
     public Attendee registerAttendee(Attendee newAttendee) {
         this.attendeeRepository.save(newAttendee);
         return newAttendee;
+    }
+
+    public AttendeeBagdeResponseDTO getAttendeeBagde(String attendeeId, UriComponentsBuilder uriComponentsBuilder) {
+        Attendee attendee = this.attendeeRepository.findById(attendeeId).orElseThrow(() -> new AttendeeNotFoundException("Attendee not found with ID:" + attendeeId));
+        var uri = uriComponentsBuilder.path("/attendees/{attendeeId}/check-in").buildAndExpand(attendeeId).toUri().toString();
+        return  new AttendeeBagdeResponseDTO(new AttendeeBadgeDTO(attendee.getNome(), attendee.getEmail(), uri, attendee.getEvent().getId()));
     }
 }
