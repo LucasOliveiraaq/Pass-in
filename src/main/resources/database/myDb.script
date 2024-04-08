@@ -29,7 +29,7 @@ SET FILES NIO TRUE
 SET FILES NIO SIZE 256
 SET FILES LOG TRUE
 SET FILES LOG SIZE 50
-SET FILES CHECK 8850
+SET FILES CHECK 11738
 SET DATABASE COLLATION "SQL_TEXT" PAD SPACE
 CREATE USER SA PASSWORD DIGEST 'd41d8cd98f00b204e9800998ecf8427e'
 ALTER USER SA SET LOCAL TRUE
@@ -58,5 +58,9 @@ INSERT INTO "flyway_schema_history" VALUES(1,'1','create-table-events','SQL','V1
 INSERT INTO "flyway_schema_history" VALUES(2,'2','create-table-attendees','SQL','V2__create-table-attendees.sql',-816961459,'SA','2024-04-03 21:31:09.885946',3,'1')
 INSERT INTO "flyway_schema_history" VALUES(3,'3','create table checkins','SQL','V3__create_table_checkins.sql',-2075238509,'SA','2024-04-03 21:31:09.898941',2,'1')
 INSERT INTO "flyway_schema_history" VALUES(4,'4','create-indexes','SQL','V4__create-indexes.sql',553901455,'SA','2024-04-03 21:31:09.912936',1,'1')
+INSERT INTO EVENTS VALUES('1af27505-a4b3-40b5-b554-77c9a9609344','Lucas teste2','Fusca2','lucas-teste2',2)
 INSERT INTO EVENTS VALUES('4f7bf349-4a17-46b6-a340-a2da452f5783','Lucas teste','Fusca','lucas-teste',500)
-INSERT INTO ATTENDEE VALUES('4f7bf349-4a17-46b6-a340-a2da452f5783', 'Lucas PO', 'LucasPO@LucasPO.COM', '4f7bf349-4a17-46b6-a340-a2da452f5783', CURRENT_TIMESTAMP)
+INSERT INTO EVENTS VALUES('ea48b21a-aaad-45cf-90d7-cfd1a55d8632','Lucas teste1','Fusca1','lucas-teste1',1)
+INSERT INTO ATTENDEES VALUES('9eeeba78-fef9-421b-9b5c-4d4be53ce8b9','Lucas teste1','Fusca12@gmail.com','1af27505-a4b3-40b5-b554-77c9a9609344','2024-04-07 23:22:45.607479')
+INSERT INTO ATTENDEES VALUES('d3ac3d04-d62c-4d3a-abf7-545f42136b56','Lucas teste','Fusca@gmail.com','ea48b21a-aaad-45cf-90d7-cfd1a55d8632','2024-04-07 22:53:57.119660')
+INSERT INTO ATTENDEES VALUES('f38110ed-ed95-459d-b7d1-7f2ad82678d2','Lucas teste','Fusca@gmail.com','4f7bf349-4a17-46b6-a340-a2da452f5783','2024-04-07 22:52:51.281406')

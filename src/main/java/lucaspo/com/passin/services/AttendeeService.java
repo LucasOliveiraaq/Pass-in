@@ -22,7 +22,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AttendeeService {
     private final AttendeeRepository attendeeRepository;
-    private final CheckInRepository checkInRepository;
+    private final CheckInService checkInService;
 
     public List<Attendee> getAllAttendeesFromEvent(String eventId)  {
         return this.attendeeRepository.findByEventId(eventId);
@@ -31,7 +31,7 @@ public class AttendeeService {
     public AttendeesListResponseDTO getEventsAttendee(String eventId) {
         List<Attendee> attendeeList = this.getAllAttendeesFromEvent(eventId);
         List<AttendeeDetails> attendeeDetails = attendeeList.stream().map(attendee -> {
-            Optional<CheckIn> checkIn = this.checkInRepository.findByAttendeeId(attendee.getId());
+            Optional<CheckIn> checkIn = this.checkInService.getCheckIn(attendee.getId());
             LocalDateTime checkedInAt = checkIn.<LocalDateTime>map(CheckIn::getCreatedAt).orElse(null);
             return new AttendeeDetails(attendee.getId(), attendee.getNome(), attendee.getEmail(), attendee.getCreatedAt(), checkedInAt);
         }).toList();
@@ -50,8 +50,17 @@ public class AttendeeService {
     }
 
     public AttendeeBagdeResponseDTO getAttendeeBagde(String attendeeId, UriComponentsBuilder uriComponentsBuilder) {
-        Attendee attendee = this.attendeeRepository.findById(attendeeId).orElseThrow(() -> new AttendeeNotFoundException("Attendee not found with ID:" + attendeeId));
+        Attendee attendee = this.getAttende(attendeeId);
         var uri = uriComponentsBuilder.path("/attendees/{attendeeId}/check-in").buildAndExpand(attendeeId).toUri().toString();
         return  new AttendeeBagdeResponseDTO(new AttendeeBadgeDTO(attendee.getNome(), attendee.getEmail(), uri, attendee.getEvent().getId()));
+    }
+
+    public void checkInAttendee(String attendeeId) {
+        Attendee attendee = this.getAttende(attendeeId);
+        this.checkInService.registerCheckIn(attendee);
+    }
+
+    private Attendee getAttende(String attendeeId) {
+        return this.attendeeRepository.findById(attendeeId).orElseThrow(() -> new AttendeeNotFoundException("Attendee not found with ID:" + attendeeId));
     }
 }

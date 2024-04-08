@@ -1,6 +1,8 @@
 package lucaspo.com.passin.controllers;
 
 import lombok.RequiredArgsConstructor;
+import lucaspo.com.passin.dto.attendee.AttendeeIdDTO;
+import lucaspo.com.passin.dto.attendee.AttendeeRequestDTO;
 import lucaspo.com.passin.dto.attendee.AttendeesListResponseDTO;
 import lucaspo.com.passin.dto.event.EventIdDTO;
 import lucaspo.com.passin.dto.event.EventRequestDTO;
@@ -38,11 +40,11 @@ public class EventController {
         return ResponseEntity.ok(attendeesListResponseDTO);
     }
 
-    @PostMapping
-    public ResponseEntity<EventIdDTO> registerParticipant(@RequestBody EventRequestDTO body, UriComponentsBuilder uriComponentsBuilder) {
-        EventIdDTO eventIdDTO = this.eventService.createEvent(body);
-        var uri = uriComponentsBuilder.path("/events/{id}").buildAndExpand(eventIdDTO.eventId()).toUri();
-        return ResponseEntity.created(uri).body(eventIdDTO);
+    @PostMapping("/{eventId}/attendees")
+    public ResponseEntity<AttendeeIdDTO> registerParticipant(@PathVariable String eventId, @RequestBody AttendeeRequestDTO body, UriComponentsBuilder uriComponentsBuilder) {
+        AttendeeIdDTO AttendeeIdDTO = this.eventService.registerAttendeeOnEvent(eventId, body);
+        var uri = uriComponentsBuilder.path("/attendees/{attendeeId}/bagde").buildAndExpand(AttendeeIdDTO.attendeeId()).toUri();
+        return ResponseEntity.created(uri).body(AttendeeIdDTO);
     }
 
 }
